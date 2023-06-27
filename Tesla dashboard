@@ -1,136 +1,54 @@
-  - title: TESLA
-    path: Tesla
-    background: >-
-      center / 100% no-repeat rgba(0, 0, 0, 0.2)
-      url("/local/backgrounds/blue.jpg") fixed
+title: SONIC
+views:
+  - title: Sonic
+    path: sonic
+    background: var(--lovelace-background,var(--primary-background-color));
     icon: mdi:ev-plug-tesla
     type: custom:vertical-layout
     width: 800
     max_cols: 1
     layout:
-      width: 520
+      width: 480
       max_cols: 1
-    theme: Caule Black Gray Glass
+    theme: Github Light Theme
     badges: []
     cards:
-      - show_current: true
-        show_forecast: false
-        type: weather-forecast
-        entity: weather.forecast_home
+      - type: custom:simple-weather-card
+        entity: weather.openweathermap_forecast
+        name: ' at the moment!'
+        secondary_info:
+          - precipitation_probability
+          - humidity
+        primary_info:
+          - wind_speed
+          - wind_bearing
         style: |
           ha-card {
             background-color: transparent;
             border: none;
+            box-shadow: none;
+            padding-left: 40px !important;
+            padding-right: 40px !important;
           }
       - type: custom:gap-card
         height: 1
       - type: horizontal-stack
         cards:
-          - type: custom:mushroom-template-card
-            entity: switch.party_mode
-            icon: mdi:snowflake
-            icon_color: |
-              {% if
-              is_state('switch.party_mode',
-              'on') %}
-                red
-              {% else %}
-               grey
-              {% endif %}
-            hold_action:
-              action: none
-            tap_action:
-              action: toggle
-            double_tap_action:
-              action: none
-            secondary: COOLING
-            layout: vertical
-            fill_container: true
-            multiline_secondary: false
-            background: rgba(35, 71, 163, 0.8)
-            card_mod: null
-            style: |
-              ha-card {
-                background-color: transparent;
-                border: none;
-              }
-          - type: entity
-            entity: sensor.black_bolt_temperature_inside
-            state_color: false
-            icon: mdi:temperature-celsius
-            name: ' CAR'
-            unit: ' '
-            style: |
-              ha-card {
-                background-color: transparent;
-                border: none;
-              }
-          - show_name: false
-            show_icon: true
-            show_state: false
-            type: glance
-            entities:
-              - entity: update.black_bolt_software_update
-            style: |
-              ha-card {
-                background-color: transparent;
-                border: none;
-              }
-          - type: entity
-            entity: sensor.black_bolt_temperature_outside
-            state_color: false
-            name: OUT
-            unit: ' '
-            icon: mdi:temperature-celsius
-            style: |
-              ha-card {
-                background-color: transparent;
-                border: none;
-              }
-          - type: custom:mushroom-template-card
-            entity: switch.party_mode
-            icon: mdi:heat-wave
-            icon_color: |
-              {% if
-              is_state('switch.party_mode',
-              'on') %}
-                red
-              {% else %}
-               grey
-              {% endif %}
-            hold_action:
-              action: none
-            tap_action:
-              action: toggle
-            double_tap_action:
-              action: none
-            secondary: HEATING
-            layout: vertical
-            fill_container: true
-            multiline_secondary: false
-            background: rgba(35, 71, 163, 0.8)
-            card_mod: null
-            style: |
-              ha-card {
-                background-color: transparent;
-                border: none;
-              }
-      - type: horizontal-stack
-        cards:
           - type: horizontal-stack
             cards:
               - type: entity
-                entity: sensor.black_bolt_range
+                entity: sensor.sonic_battery
                 icon: ' '
                 name: ' '
                 state_color: false
-                unit: miles
+                unit: null
                 style: |
                   ha-card {
+                    text-align: right;
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                   }
-              - type: custom:gap-card
               - type: custom:banner-card
                 heading: null
                 color: white
@@ -138,7 +56,7 @@
                   style: |
                     ha-card {
                       font-size: 10px;
-                      {% set battery_level = states('sensor.black_bolt_battery')|float %}
+                      {% set battery_level = states('sensor.sonic_battery')|float %}
                       {% if battery_level <= 25 %}
                         background: linear-gradient(to right, rgba(139, 0, 0, 0.6), rgba(255, 0, 0, 0.6)) 0% 0% / {{ battery_level }}% 100% no-repeat;
                       {% elif battery_level >= 26 and battery_level <= 60 %}
@@ -147,42 +65,137 @@
                         background: linear-gradient(to right, rgba(154, 205, 50, 0.6), rgba(34, 139, 34, 0.6)) 0% 0% / {{ battery_level }}% 100% no-repeat;
                       {% endif %}
                       width: 100%;
-                      height: 10%;
+                      height: 20%;
                       top: 50%;
                       position: relative;
                       overflow: hidden;
-                    border: none;
-                    border-radius: 20px;
+                      border: 1px solid rgba(200, 200, 200, 0.1);
+                      border-radius: 20px;
+                      box-shadow: none;
                     }
-              - type: custom:gap-card
               - type: entity
-                entity: sensor.black_bolt_battery
+                entity: sensor.sonic_range
+                value_template: |
+                  {{ states('sensor.sonic_range')|float|round(0) }}
                 icon: ' '
                 name: ' '
                 state_color: false
-                unit: null
+                unit: Km
                 style: |
                   ha-card {
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                   }
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-template-card
+            entity: climate.sonic_hvac_climate_system
+            icon: mdi:air-conditioner
+            icon_color: |
+              {% if is_state('climate.sonic_hvac_climate_system', 'off') %}
+                grey
+              {% else %}
+                red
+              {% endif %}
+            hold_action:
+              action: none
+            tap_action:
+              action: toggle
+            double_tap_action:
+              action: none
+            secondary: CLIMATE
+            layout: vertical
+            fill_container: true
+            multiline_secondary: false
+            background: rgba(35, 71, 163, 0.8)
+            card_mod: null
+            style: |
+              ha-card {
+                background-color: transparent;
+                border: none;
+                box-shadow: none;
+              }
+          - type: entity
+            entity: sensor.sonic_temperature_inside
+            state_color: false
+            icon: mdi:temperature-celsius
+            name: CAR
+            unit: ' '
+            style: |
+              ha-card {
+                text-align: center;
+                background-color: transparent;
+                border: none;
+                box-shadow: none;
+              }
+              .header {
+                justify-content: space-evenly !important;
+              }
+          - type: entity
+            entity: sensor.sonic_temperature_outside
+            state_color: false
+            name: OUT
+            unit: ' '
+            icon: mdi:temperature-celsius
+            style: |
+              ha-card {
+                text-align: center;
+                background-color: transparent;
+                border: none;
+                box-shadow: none;
+              }
+              .header {
+                justify-content: space-evenly !important;
+              }
+          - type: custom:mushroom-template-card
+            entity: select.sonic_heated_seat_right
+            icon: mdi:car-seat-heater
+            icon_color: |
+              {% if is_state('select.sonic_heated_seat_right', 'Off') %}
+                grey
+              {% elif is_state('select.sonic_heated_seat_right', 'Auto') %}
+                green
+              {% elif is_state('select.sonic_heated_seat_right', 'Low') %}
+                yellow
+              {% elif is_state('select.sonic_heated_seat_right', 'Medium') %}
+                orange
+              {% else %}
+                red
+              {% endif %}
+            tap_action:
+              action: more-info
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            secondary: DRIVER SEAT
+            layout: vertical
+            fill_container: true
+            multiline_secondary: false
+            background: rgba(35, 71, 163, 0.8)
+            card_mod: null
+            style: |
+              ha-card {
+                background-color: transparent;
+                border: none;
+                box-shadow: none;
+              }
       - type: horizontal-stack
         cards:
           - type: custom:gap-card
           - type: custom:gap-card
           - type: custom:mushroom-template-card
             icon: mdi:car
-            icon_color: |2
-               {% if
-              is_state('cover.black_bolt_frunk',
-              'on') %}
+            icon_color: |
+              {% if is_state('cover.sonic_frunk', 'on') %}
                 ''
               {% else %}
-               #666666
+                grey
               {% endif %}
             layout: vertical
             fill_container: true
-            entity: cover.black_bolt_frunk
+            entity: cover.sonic_frunk
             primary: ''
             secondary: FRUNK
             badge_color: ''
@@ -190,6 +203,7 @@
               ha-card {
                 background-color: transparent;
                 border: none;
+                box-shadow: none;
               }
           - type: custom:gap-card
           - type: custom:gap-card
@@ -198,18 +212,16 @@
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
-                icon: mdi:shield-car
-                icon_color: |2
-                   {% if
-                  is_state('switch.black_bolt_sentry_mode',
-                  'on') %}
-                    green
+                icon: mdi:camera-enhance
+                icon_color: |
+                  {% if is_state('switch.sonic_sentry_mode', 'on') %}
+                    red
                   {% else %}
-                   red
+                    grey
                   {% endif %}
                 layout: vertical
                 fill_container: true
-                entity: switch.black_bolt_sentry_mode
+                entity: switch.sonic_sentry_mode
                 primary: ''
                 secondary: SENTRY
                 badge_color: ''
@@ -217,30 +229,44 @@
                   ha-card {
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                   }
               - type: custom:gap-card
-                height: 95
+                height: 85
               - type: custom:mushroom-template-card
-                icon: mdi:ev-plug-ccs2
-                icon_color: |2
-                   {% if
-                  is_state('binary_sensor.black_bolt_charging',
-                  'on') %}
-                    red
+                icon: |
+                  {% if is_state('binary_sensor.sonic_charging', 'on') %}
+                    {{ states.sensor.sonic_battery.attributes.icon }}
                   {% else %}
-                   green
+                    mdi:ev-plug-ccs2
+                  {% endif %}
+                icon_color: |
+                  {% if is_state('binary_sensor.sonic_charging', 'on') %}
+                    green
+                  {% else %}
+                    {% if is_state('cover.sonic_charger_door', 'open') %}
+                      red
+                    {% else %}
+                      grey
+                    {% endif %}
                   {% endif %}
                 layout: vertical
                 fill_container: true
-                entity: cover.black_bolt_frunk
+                entity: cover.sonic_charger_door
                 primary: ''
-                secondary: CHARGING PORT
+                secondary: |
+                  {% if is_state('binary_sensor.sonic_charging', 'on') %}
+                    CHARGING
+                  {% else %}
+                    BUTHOLE
+                  {% endif %}
                 badge_color: ''
                 style: |
                   ha-card {
                     position: relative;
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                     border-radius: 4px;
                     padding: 0px;
                     overflow: hidden;
@@ -254,44 +280,51 @@
                     width: 0;
                     border-radius: 4px;
                     background-color: rgba(4, 93, 0, 0.6);
-                    animation: {% if is_state('binary_sensor.black_bolt_charging', 'on') %} charge 15s linear infinite{% endif %};
+                    animation: {% if is_state('binary_sensor.sonic_charging', 'on') %} charge 15s linear infinite{% endif %};
                   }
                   @keyframes charge {
                     0% { width: 0; }
-                    100% { width: calc(({{ states('sensor.black_bolt_battery') }} / 100) * 100%); }
+                    100% { width: calc(({{ states('sensor.sonic_battery') }} / 100) * 100%); }
                   }
           - type: vertical-stack
             cards:
               - type: custom:button-card
+                entity: button.sonic_force_data_update
+                icon: none
+                name: ' '
                 aspect_ratio: 1/1.8
                 tap_action:
-                  action: none
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.sonic_force_data_update
                 hold_action:
-                  action: none
+                  action: more-info
                 styles:
                   card:
                     - background: >-
                         center / cover no-repeat
-                        url('/local/backgrounds/tesla_top.png')
+                        url('https://api.danielfanica.com/assets/d9ac4103-a603-4b4d-a4d7-4233b8d384ac')
                     - background-size: 80%
                 style: |
                   ha-card {
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                   }
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 icon: mdi:lock
                 icon_color: |
-                  {% if is_state('lock.black_bolt_doors', 'unlocked') %}
+                  {% if is_state('lock.sonic_doors', 'unlocked') %}
                     red
                   {% else %}
                     green
                   {% endif %}
                 layout: vertical
                 fill_container: true
-                entity: lock.black_bolt_doors
+                entity: lock.sonic_doors
                 primary: ''
                 secondary: DOORS
                 badge_color: ''
@@ -300,21 +333,20 @@
                     position: relative;
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                     padding: 8px;
                   }
               - type: custom:mushroom-template-card
                 icon: mdi:car-door
-                icon_color: |2
-                   {% if
-                  is_state('cover.black_bolt_windows',
-                  'open') %}
+                icon_color: |
+                  {% if is_state('cover.sonic_windows', 'open') %}
                     red
                   {% else %}
-                   green
+                    green
                   {% endif %}
                 layout: vertical
                 fill_container: true
-                entity: cover.black_bolt_windows
+                entity: cover.sonic_windows
                 primary: ''
                 secondary: WINDOWS
                 badge_color: ''
@@ -322,26 +354,50 @@
                   ha-card {
                     background-color: transparent;
                     border: none;
+                    box-shadow: none;
                   }
-              - type: custom:gap-card
-                height: 95
+              - type: custom:mushroom-template-card
+                icon: mdi:progress-download
+                icon_color: |
+                  {% if is_state('update.sonic_software_update', 'off') %}
+                    grey
+                  {% else %}
+                    green
+                  {% endif %}
+                layout: vertical
+                fill_container: true
+                entity: update.sonic_software_update
+                tap_action:
+                  action: more-info
+                primary: ' '
+                secondary: |
+                  {% if is_state('update.sonic_software_update', 'off') %}
+                    UP TO DATE
+                  {% else %}
+                    {{ states.update.sonic_software_update.attributes.latest_version }}
+                  {% endif %}
+                badge_color: ' '
+                style: |
+                  ha-card {
+                    background-color: transparent;
+                    border: none;
+                    box-shadow: none;
+                  }
       - type: horizontal-stack
         cards:
           - type: custom:gap-card
           - type: custom:gap-card
           - type: custom:mushroom-template-card
             icon: mdi:car
-            icon_color: |2
-               {% if
-              is_state('cover.black_bolt_trunk',
-              'open') %}
+            icon_color: |
+              {% if is_state('cover.sonic_trunk', 'open') %}
                 red
               {% else %}
-               #666666
+                grey
               {% endif %}
             layout: vertical
             fill_container: true
-            entity: cover.black_bolt_trunk
+            entity: cover.sonic_trunk
             primary: ''
             secondary: TRUNK
             badge_color: ''
@@ -349,6 +405,7 @@
               ha-card {
                 background-color: transparent;
                 border: none;
+                box-shadow: none;
               }
           - type: custom:gap-card
           - type: custom:gap-card
